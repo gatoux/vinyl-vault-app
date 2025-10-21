@@ -120,6 +120,35 @@ const VinylVault = () => {
     {"Artist":"The Blues Brothers","Album":"Briefcase Full of Blues","Year":"1978","Genre":"Blues","Tier":"A","Length":"45m","DateListened":"2/26","DateBought":"","PlaceBought":"","CityBought":"Portland","Cost":"","NewUsed":"Used"}
   ];
 
+  // Helper function to normalize genre names
+  const normalizeGenre = (genre) => {
+    if (!genre) return null;
+    const g = genre.toLowerCase().trim();
+    
+    // Map various genre names to standardized format
+    if (g.includes('60') || g.includes('1960')) return '60s';
+    if (g.includes('70') || g.includes('1970')) return '70s';
+    if (g.includes('80') || g.includes('1980')) return '80s';
+    if (g.includes('90') || g.includes('1990')) return '90s';
+    if (g.includes('00') || g.includes('2000')) return '2000s';
+    if (g.includes('10') || g.includes('2010')) return '2010s';
+    if (g.includes('20') || g.includes('2020')) return '2020s';
+    if (g.includes('hip') || g.includes('r&b') || g.includes('r and b')) return 'Hip-Hop / R&B';
+    if (g.includes('folk') || g.includes('country')) return 'Folk/Country';
+    if (g.includes('jazz')) return 'Jazz';
+    if (g.includes('soul')) return 'Soul';
+    if (g.includes('funk')) return 'Funk';
+    if (g.includes('blues')) return 'Blues';
+    if (g.includes('class')) return 'Classical';
+    if (g.includes('world')) return 'World';
+    if (g.includes('lounge')) return 'Lounge';
+    if (g.includes('electron')) return 'Electronic';
+    if (g.includes('sound')) return 'Soundtrack';
+    if (g.includes('comedy')) return 'Comedy';
+    
+    return genre; // Return original if no match
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -132,8 +161,35 @@ const VinylVault = () => {
         
         const data = await response.json();
         console.log('Received', data.count, 'albums from API');
+        console.log('Sample album:', data.albums[0]); // Debug: see field names
         
-        const uniqueAlbums = data.albums.filter((album, index, self) => 
+        // Map Airtable fields to expected format
+        const processedAlbums = data.albums.map(album => {
+          const genre = normalizeGenre(album['2025 Genre']);
+          let tier = album['2025 Rating'];
+          
+          // If no rating or genre, assign to TBD
+          if (!tier || !genre) {
+            tier = 'TBD';
+          }
+          
+          return {
+            Artist: album.Artist,
+            Album: album.Album,
+            Year: album.Year,
+            Genre: genre,
+            Tier: tier,
+            Length: album.Length,
+            'Date Listened': album['Date Listened'],
+            'Date Bought': album['Date Bought'],
+            'Place Bought': album['Place Bought'],
+            'City Bought': album['City Bought'],
+            Cost: album.Cost,
+            'New/Used': album['New/Used']
+          };
+        });
+        
+        const uniqueAlbums = processedAlbums.filter((album, index, self) => 
           index === self.findIndex((a) => 
             a.Artist === album.Artist && a.Album === album.Album
           )
@@ -152,7 +208,7 @@ const VinylVault = () => {
           Year: album.Year,
           Genre: album.Genre,
           Tier: album.Tier,
-          'Album Length': album.Length,
+          Length: album.Length,
           'Date Listened': album.DateListened,
           'Date Bought': album.DateBought,
           'Place Bought': album.PlaceBought,
@@ -349,7 +405,8 @@ const VinylVault = () => {
     { label: 'A', color: '#ffd93d', tier: 'A' },
     { label: 'B', color: '#6bcf7f', tier: 'B' },
     { label: 'C', color: '#4ecdc4', tier: 'C' },
-    { label: 'D', color: '#95a3a6', tier: 'D' }
+    { label: 'D', color: '#95a3a6', tier: 'D' },
+    { label: 'TBD', color: '#888888', tier: 'TBD' }
   ];
 
   const decadeBins = [
@@ -440,7 +497,7 @@ const VinylVault = () => {
             Click below to open the playlist in Spotify
           </p>
           <a 
-            href="https://open.spotify.com/playlist/74709D1dFkpSrrRiczA8xd" 
+            href="spotify:playlist:74709D1dFkpSrrRiczA8xd" 
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-block bg-green-500 hover:bg-green-600 text-black font-bold py-4 px-8 rounded-lg font-mono text-lg transition-colors">
@@ -694,7 +751,7 @@ const VinylVault = () => {
           </button>
         </div>
 
-        <div className="relative mx-auto" style={{ maxWidth: '1200px', height: '700px' }}>
+        <div className="relative mx-auto" style={{ maxWidth: '1200px', height: '500px' }}>
           
           <div className="absolute inset-x-0 top-0 bottom-0" 
                style={{ 
@@ -786,38 +843,38 @@ const VinylVault = () => {
             </div>
           </div>
 
-          <div className="absolute bottom-48 left-1/2 -translate-x-1/2 z-30 cursor-pointer hover:scale-105 transition-transform"
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-30 cursor-pointer hover:scale-105 transition-transform"
                onClick={() => setCurrentView('search')}>
-            <div className="bg-gray-700 border-6 border-gray-900 rounded-lg p-4 shadow-2xl"
-                 style={{ width: '220px', boxShadow: '6px 6px 0px rgba(0,0,0,0.5)' }}>
-              <div className="bg-green-900 border-3 border-green-950 p-3 mb-3 font-mono text-green-400 text-center text-xs leading-relaxed">
+            <div className="bg-gray-700 border-6 border-gray-900 rounded-lg p-3 shadow-2xl"
+                 style={{ width: '180px', boxShadow: '6px 6px 0px rgba(0,0,0,0.5)' }}>
+              <div className="bg-green-900 border-3 border-green-950 p-2 mb-2 font-mono text-green-400 text-center text-xs leading-relaxed">
                 SEARCH<br/>ENTIRE<br/>COLLECTION
               </div>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-4 gap-1">
                 {[...Array(8)].map((_, i) => (
-                  <div key={i} className="h-4 bg-gray-800 border-2 border-gray-950 rounded" />
+                  <div key={i} className="h-3 bg-gray-800 border-2 border-gray-950 rounded" />
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="absolute bottom-48 left-1/2 -translate-x-1/2 z-30 cursor-pointer hover:scale-105 transition-transform"
-               style={{ marginLeft: '260px' }}
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-30 cursor-pointer hover:scale-105 transition-transform"
+               style={{ marginLeft: '220px' }}
                onClick={() => setShowPlaylist(true)}>
-            <div className="bg-green-700 border-6 border-green-900 rounded-lg p-4 shadow-2xl relative animate-pulse"
-                 style={{ width: '180px', boxShadow: '6px 6px 0px rgba(0,0,0,0.5)' }}>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white border-4 border-black rounded-full p-2 animate-bounce">
-                <div className="text-2xl">🎵</div>
+            <div className="bg-green-700 border-6 border-green-900 rounded-lg p-3 shadow-2xl relative animate-pulse"
+                 style={{ width: '150px', boxShadow: '6px 6px 0px rgba(0,0,0,0.5)' }}>
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white border-4 border-black rounded-full p-1 animate-bounce">
+                <div className="text-xl">🎵</div>
               </div>
-              <div className="bg-green-900 border-3 border-green-950 p-3 font-mono text-green-300 text-center text-xs leading-relaxed">
+              <div className="bg-green-900 border-3 border-green-950 p-2 font-mono text-green-300 text-center text-xs leading-relaxed">
                 HEY!<br/>LISTEN!<br/>🎮
               </div>
             </div>
           </div>
 
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-40"
-               style={{ marginLeft: '-120px' }}>
-            <div className="relative" style={{ width: '48px', height: '80px' }}>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40"
+               style={{ marginLeft: '-100px', transform: 'scale(0.8)' }}>
+            <div className="relative" style={{ width: '48px', height: '70px' }}>
               <div className="absolute top-0 left-1/2 -translate-x-1/2">
                 <div className="w-8 h-5 bg-gray-800 rounded-t-full border-2 border-black" 
                      style={{ borderBottom: '2px solid #4b5563' }} />
