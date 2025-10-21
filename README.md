@@ -1,6 +1,6 @@
 # Vinyl Vault App
 
-A React app to browse and manage your vinyl record collection, powered by Airtable.
+A React app to browse and manage your vinyl record collection, powered by Airtable. 
 
 ## Features
 
