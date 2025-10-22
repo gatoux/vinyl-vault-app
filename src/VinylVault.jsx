@@ -415,14 +415,17 @@ const VinylVault = () => {
 
   const RecordBin = ({ albums, color, label, onClick }) => {
     const count = albums.length;
+    // Use brown gradient for most bins, but allow override (for TBD)
+    const isTBD = label === 'TBD';
+    
     return (
       <div className="relative cursor-pointer hover:brightness-110 transition-all"
            onClick={onClick}
            style={{ width: '110px' }}>
-        <div className="relative border-3 border-black rounded p-2"
+        <div className={isTBD ? "relative border-3 border-black rounded p-2" : "relative bg-gradient-to-br from-amber-800 to-amber-900 border-3 border-amber-950 rounded p-2"}
              style={{ 
                height: '55px',
-               background: color || '#92400e'
+               ...(isTBD && { background: color })
              }}>
           <div className="absolute top-1 left-0 right-0 text-center px-1 py-0.5 text-sm font-bold text-white"
                style={{ textShadow: '2px 2px 3px rgba(0,0,0,0.9)' }}>
@@ -575,16 +578,15 @@ const VinylVault = () => {
 
   const WelcomeDialog = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-none">
-      <div className="relative bg-white border-8 border-black rounded-lg shadow-2xl max-w-md pointer-events-auto">
+      <div className="relative bg-white border-8 border-black rounded-lg shadow-2xl max-w-md pointer-events-auto cursor-pointer"
+           onClick={() => setShowWelcome(false)}>
         <div className="p-8 font-mono text-base leading-relaxed text-center">
           Welcome to Gatoux's Vinyl Vault! Click on any of the bins to browse, or click on the computer to explore the entire collection. Happy browsing!
         </div>
         <div className="flex justify-center pb-6">
-          <button 
-            className="animate-pulse text-black text-4xl hover:scale-110 transition-transform"
-            onClick={() => setShowWelcome(false)}>
+          <div className="animate-pulse text-black text-4xl">
             💿
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1220,7 +1222,7 @@ const VinylVault = () => {
               </div>
 
               <div className="flex-1 flex flex-col items-center justify-center">
-                <div className="relative w-full max-w-2xl" style={{ height: '450px' }}>
+                <div className="relative max-w-2xl mx-auto" style={{ height: '450px', width: '420px' }}>
                   {binAlbums.map((album, idx) => {
                     const offset = idx - currentIndex;
                     const isVisible = Math.abs(offset) <= 2;
