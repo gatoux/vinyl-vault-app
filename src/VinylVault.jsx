@@ -373,13 +373,20 @@ const VinylVault = () => {
   };
 
   const getAlbumImage = (album) => {
-    // First, check if the album has an Image URL from Airtable
-    if (album['Image URL']) {
-      return album['Image URL'];
+    // Debug: log the album object keys
+    console.log('Album keys:', Object.keys(album));
+    
+    // Try multiple possible field names
+    const imageUrl = album['Image URL'] || album['ImageURL'] || album['image url'] || album.ImageURL;
+    
+    if (imageUrl) {
+      console.log('Found Image URL for', album.Artist, '-', album.Album, ':', imageUrl);
+      return imageUrl;
     }
     
     // Fallback to the old hardcoded images (if they exist)
     const imageKey = album.Artist + '-' + album.Album;
+    console.log('No Image URL found, checking hardcoded images for:', imageKey);
     return albumImages[imageKey];
   };
 
