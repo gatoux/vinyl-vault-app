@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 
 const VinylVault = () => {
@@ -21,8 +21,10 @@ const VinylVault = () => {
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [excludeTBD, setExcludeTBD] = useState(false);
   const [mascotComment, setMascotComment] = useState(null);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  
+  // Refs for touch tracking
+  const touchStartY = useRef(null);
+  const touchEndY = useRef(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -1420,13 +1422,13 @@ const VinylVault = () => {
                    setScrollTimeout(timeout);
                  }}
                  onTouchStart={(e) => {
-                   setTouchEnd(null);
-                   setTouchStart(e.targetTouches[0].clientY);
+                   touchEndY.current = null;
+                   touchStartY.current = e.targetTouches[0].clientY;
                  }}
-                 onTouchMove={(e) => setTouchEnd(e.targetTouches[0].clientY)}
+                 onTouchMove={(e) => touchEndY.current = e.targetTouches[0].clientY}
                  onTouchEnd={() => {
-                   if (!touchStart || !touchEnd) return;
-                   const distance = touchStart - touchEnd;
+                   if (!touchStartY.current || !touchEndY.current) return;
+                   const distance = touchStartY.current - touchEndY.current;
                    const isSwipe = Math.abs(distance) > 50;
                    if (isSwipe) {
                      if (distance > 0) {
