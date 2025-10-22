@@ -468,33 +468,6 @@ const VinylVault = () => {
     return snarkyComments[Math.floor(Math.random() * snarkyComments.length)];
   };
 
-  // Swipe handlers for mobile
-  const handleTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchEnd = (maxIndex) => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const minSwipeDistance = 50;
-    
-    if (Math.abs(distance) > minSwipeDistance) {
-      if (distance > 0) {
-        // Swiped up - go to next
-        setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
-      } else {
-        // Swiped down - go to previous
-        setCurrentIndex(prev => Math.max(0, prev - 1));
-      }
-    }
-  };
-
   const RecordBin = ({ albums, color, label, onClick }) => {
     const count = albums.length;
     // Use brown gradient for most bins, but allow override (for TBD)
