@@ -785,58 +785,43 @@ const VinylVault = () => {
             ))}
           </div>
 
-          <div className="absolute right-6 top-2 z-10 flex flex-col items-end">
-            <div className="bg-gray-900 px-3 py-1 rounded font-mono text-yellow-400 text-xs border-2 border-yellow-600 mb-2.5">
+          <div className="absolute right-6 top-2 z-10">
+            <div className="bg-gray-900 px-3 py-1 rounded font-mono text-yellow-400 text-xs border-2 border-yellow-600 mb-2.5 text-center">
               GENRES
             </div>
-            <div className="space-y-2.5 mb-2.5 flex flex-col items-end">
-              {genreBins.slice(0, 7).map(bin => (
-                <RecordBin 
-                  key={bin.label}
-                  albums={getBinAlbums('genre', bin.label)} 
-                  color={bin.color} 
-                  label={bin.label}
-                  onClick={() => {
-                    setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
-                    setCurrentView('bin');
-                    setCurrentIndex(0);
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom row of genre bins */}
-          <div className="absolute bottom-20 left-6 right-6 z-10 flex justify-between items-end px-24">
-            <div className="flex gap-2">
-              {genreBins.slice(7, 10).map(bin => (
-                <RecordBin 
-                  key={bin.label}
-                  albums={getBinAlbums('genre', bin.label)} 
-                  color={bin.color} 
-                  label={bin.label}
-                  onClick={() => {
-                    setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
-                    setCurrentView('bin');
-                    setCurrentIndex(0);
-                  }}
-                />
-              ))}
-            </div>
-            <div className="flex gap-2">
-              {genreBins.slice(10).map(bin => (
-                <RecordBin 
-                  key={bin.label}
-                  albums={getBinAlbums('genre', bin.label)} 
-                  color={bin.color} 
-                  label={bin.label}
-                  onClick={() => {
-                    setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
-                    setCurrentView('bin');
-                    setCurrentIndex(0);
-                  }}
-                />
-              ))}
+            <div className="flex gap-3">
+              {/* First column - 7 bins */}
+              <div className="space-y-2.5 flex flex-col items-end">
+                {genreBins.slice(0, 7).map(bin => (
+                  <RecordBin 
+                    key={bin.label}
+                    albums={getBinAlbums('genre', bin.label)} 
+                    color={bin.color} 
+                    label={bin.label}
+                    onClick={() => {
+                      setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
+                      setCurrentView('bin');
+                      setCurrentIndex(0);
+                    }}
+                  />
+                ))}
+              </div>
+              {/* Second column - remaining bins */}
+              <div className="space-y-2.5 flex flex-col items-end">
+                {genreBins.slice(7).map(bin => (
+                  <RecordBin 
+                    key={bin.label}
+                    albums={getBinAlbums('genre', bin.label)} 
+                    color={bin.color} 
+                    label={bin.label}
+                    onClick={() => {
+                      setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
+                      setCurrentView('bin');
+                      setCurrentIndex(0);
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1161,7 +1146,7 @@ const VinylVault = () => {
                    setScrollTimeout(timeout);
                  }}>
               
-              <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-start" style={{ marginTop: '40px' }}>
+              <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-center" style={{ marginTop: '0' }}>
                 <div className="text-center mb-3">
                   <p className="text-yellow-400 font-mono font-bold text-base mb-2">HOW TO NAVIGATE</p>
                 </div>
@@ -1184,7 +1169,7 @@ const VinylVault = () => {
                 </div>
               </div>
 
-              <div className="flex-1 flex flex-col items-center">
+              <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="relative w-full max-w-2xl" style={{ height: '450px' }}>
                   {binAlbums.map((album, idx) => {
                     const offset = idx - currentIndex;
@@ -1206,11 +1191,11 @@ const VinylVault = () => {
                           transform: 'translate(-50%, calc(-50% + ' + translateY + 'px)) scale(' + scale + ')',
                           opacity: opacity,
                           zIndex: zIndex,
-                          width: '500px'
+                          width: '420px'
                         }}
                         onClick={() => offset === 0 && setSelectedAlbum(album)}>
                         <div className="relative bg-gray-800 rounded-lg p-4 border-8 border-black shadow-2xl overflow-hidden"
-                             style={{ height: '400px' }}>
+                             style={{ height: '420px' }}>
                           {albumImage && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <img src={albumImage} alt={album.Album} className="w-full h-full object-contain opacity-40" />
@@ -1222,11 +1207,11 @@ const VinylVault = () => {
                           </div>
                           
                           <div className="relative flex flex-col items-center justify-center h-full text-center">
-                            <div className="text-3xl font-bold text-yellow-400 mb-4 drop-shadow-lg">{album.Artist}</div>
-                            <div className="text-xl text-gray-300 mb-4 drop-shadow-lg">{album.Album}</div>
-                            <div className="text-lg text-gray-400 drop-shadow-lg">{album.Year}</div>
+                            <div className="text-2xl font-bold text-yellow-400 mb-3 drop-shadow-lg">{album.Artist}</div>
+                            <div className="text-lg text-gray-300 mb-3 drop-shadow-lg">{album.Album}</div>
+                            <div className="text-base text-gray-400 drop-shadow-lg">{album.Year}</div>
                             {offset === 0 && (
-                              <div className="mt-6 text-sm text-cyan-400 font-mono animate-pulse drop-shadow-lg">
+                              <div className="mt-4 text-xs text-cyan-400 font-mono animate-pulse drop-shadow-lg">
                                 ▼ CLICK TO VIEW DETAILS ▼
                               </div>
                             )}
@@ -1242,10 +1227,10 @@ const VinylVault = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-2 self-start" style={{ marginTop: '80px' }}>
+              <div className="flex flex-col items-center gap-2 self-center" style={{ marginTop: '0' }}>
                 <div 
                   className="w-12 bg-gray-900 border-4 border-black rounded-lg overflow-hidden cursor-pointer hover:border-yellow-600 transition-colors" 
-                  style={{ height: '600px' }}
+                  style={{ height: '450px' }}
                   onClick={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const y = e.clientY - rect.top;
