@@ -652,13 +652,13 @@ const VinylVault = () => {
     
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
-        <div className="bg-gradient-to-br from-purple-900 to-purple-700 rounded-lg p-8 max-w-3xl w-full border-4 border-purple-400 max-h-screen overflow-y-auto">
-          <button onClick={onClose} className="absolute top-4 right-4 text-white hover:text-gray-300">
+        <div className="bg-gradient-to-br from-purple-900 to-purple-700 rounded-lg p-4 sm:p-8 max-w-3xl w-full border-4 border-purple-400 max-h-screen overflow-y-auto">
+          <button onClick={onClose} className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white hover:text-gray-300 z-10">
             <X size={32} />
           </button>
           
-          <div className="flex gap-6 mb-6">
-            <div className="w-64 h-64 bg-gray-600 flex items-center justify-center text-gray-400 text-sm rounded flex-shrink-0 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
+            <div className="w-full sm:w-64 h-64 bg-gray-600 flex items-center justify-center text-gray-400 text-sm rounded flex-shrink-0 relative overflow-hidden">
               {albumImage ? (
                 <img src={albumImage} alt={album.Album} className="w-full h-full object-cover" />
               ) : (
@@ -667,15 +667,16 @@ const VinylVault = () => {
             </div>
             
             <div className="flex-1 text-white">
-              <div className="absolute top-4 right-16">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold"
+              <div className="flex justify-between items-start mb-4 sm:block">
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold mb-2">{album.Artist}</h2>
+                  <p className="text-lg sm:text-xl mb-4 sm:mb-6">{album.Album}</p>
+                </div>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0"
                      style={{ backgroundColor: tierBins.find(t => t.tier === album.Tier)?.color || '#999' }}>
                   {album.Tier}
                 </div>
               </div>
-              
-              <h2 className="text-3xl font-bold mb-2">{album.Artist}</h2>
-              <p className="text-xl mb-6">{album.Album}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm mb-6">
                 <div>
@@ -734,19 +735,19 @@ const VinylVault = () => {
                 </div>
               )}
               
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <a href={spotifySearchUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
+                   className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
                   🎵 Find on Spotify
                 </a>
                 <a href={appleMusicSearchUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
+                   className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
                   🎵 Find on Apple Music
                 </a>
               </div>
               
               <button onClick={onClose}
-                      className="w-full mt-4 bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 px-6 rounded-lg">
+                      className="w-full mt-4 bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 px-6 rounded-lg text-sm sm:text-base">
                 Close
               </button>
             </div>
@@ -770,17 +771,160 @@ const VinylVault = () => {
         {showWelcome && <WelcomeDialog />}
         {showPlaylist && <PlaylistModal />}
         
-        <div className="text-center py-4 relative z-10">
-          <h1 className="text-4xl font-bold text-yellow-400 font-mono tracking-wider mb-1"
+        <div className="text-center py-4 relative z-10 px-4">
+          <h1 className="text-2xl sm:text-4xl font-bold text-yellow-400 font-mono tracking-wider mb-1"
               style={{ textShadow: '3px 3px 0px #000' }}>
             VINYL VAULT
           </h1>
-          <p className="text-yellow-300 font-mono text-xs">
-            {albums.length} ALBUMS IN COLLECTION | {albums.filter(a => a.Tier && a.Tier !== 'TBD').length} LISTENED TO THIS YEAR
+          <p className="text-yellow-300 font-mono text-xs sm:text-sm">
+            {albums.length} ALBUMS | {albums.filter(a => a.Tier && a.Tier !== 'TBD').length} LISTENED
           </p>
         </div>
 
-        <div className="relative mx-auto" style={{ maxWidth: '1200px', height: '500px' }}>
+        {/* Mobile view - Simple button layout */}
+        <div className="block lg:hidden px-4 pb-20">
+          <div className="max-w-md mx-auto space-y-4">
+            <button 
+              onClick={() => setCurrentView('search')}
+              className="w-full bg-green-900 border-4 border-green-950 rounded-lg p-4 font-mono text-green-400 text-lg hover:bg-green-800">
+              🔍 SEARCH COLLECTION
+            </button>
+            
+            <button 
+              onClick={() => setShowPlaylist(true)}
+              className="w-full bg-purple-700 border-4 border-purple-900 rounded-lg p-4 font-mono text-white text-lg hover:bg-purple-600">
+              🎵 PLAYLIST BUILDER
+            </button>
+
+            <div className="bg-gray-900 rounded-lg p-4 border-4 border-yellow-600">
+              <h3 className="text-yellow-400 font-mono text-sm mb-3 text-center">BY TIER</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {tierBins.filter(bin => bin.tier !== 'TBD').map(bin => (
+                  <button
+                    key={bin.tier}
+                    onClick={() => {
+                      setSelectedBin({ type: 'tier', value: bin.tier, label: bin.label + ' Tier', color: bin.color });
+                      setCurrentView('bin');
+                      setCurrentIndex(0);
+                    }}
+                    className="bg-amber-800 border-2 border-black rounded p-3 font-bold text-white hover:brightness-110"
+                    style={{ backgroundColor: bin.color }}>
+                    <div className="text-lg">{bin.label}</div>
+                    <div className="text-xs">{getBinAlbums('tier', bin.tier).length}</div>
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedBin({ type: 'tier', value: 'TBD', label: 'TBD Albums', color: '#6b7280' });
+                  setCurrentView('bin');
+                  setCurrentIndex(0);
+                }}
+                className="w-full mt-2 bg-gray-500 border-2 border-black rounded p-2 font-bold text-white text-sm">
+                TBD ({getBinAlbums('tier', 'TBD').length})
+              </button>
+            </div>
+
+            <div className="bg-gray-900 rounded-lg p-4 border-4 border-yellow-600">
+              <h3 className="text-yellow-400 font-mono text-sm mb-3 text-center">DECADES</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {decadeBins.map(bin => (
+                  <button
+                    key={bin.label}
+                    onClick={() => {
+                      setSelectedBin({ type: 'decade', value: bin.label, label: bin.label, color: bin.color });
+                      setCurrentView('bin');
+                      setCurrentIndex(0);
+                    }}
+                    className="bg-amber-800 border-2 border-black rounded p-2 font-bold text-white text-sm hover:brightness-110"
+                    style={{ backgroundColor: bin.color }}>
+                    <div>{bin.label}</div>
+                    <div className="text-xs">{getBinAlbums('decade', bin.label).length}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gray-900 rounded-lg p-4 border-4 border-yellow-600">
+              <h3 className="text-yellow-400 font-mono text-sm mb-3 text-center">GENRES</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {genreBins.map(bin => (
+                  <button
+                    key={bin.label}
+                    onClick={() => {
+                      setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
+                      setCurrentView('bin');
+                      setCurrentIndex(0);
+                    }}
+                    className="bg-amber-800 border-2 border-black rounded p-2 font-bold text-white text-sm hover:brightness-110"
+                    style={{ backgroundColor: bin.color }}>
+                    <div className="truncate">{bin.label}</div>
+                    <div className="text-xs">{getBinAlbums('genre', bin.label).length}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile mascot */}
+            <div className="flex justify-center py-8">
+              <div className="cursor-pointer hover:scale-110 transition-transform"
+                   onClick={() => setMascotComment(getRandomComment())}>
+                {!mascotComment && (
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white border-2 border-black rounded-full px-2 py-1 text-xs animate-bounce">
+                    ...
+                  </div>
+                )}
+                <div className="relative" style={{ width: '48px', height: '70px' }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2">
+                    <div className="w-8 h-5 bg-gray-800 rounded-t-full border-2 border-black" 
+                         style={{ borderBottom: '2px solid #4b5563' }} />
+                    <div className="w-7 h-8 bg-pink-200 border-2 border-black mx-auto -mt-0.5">
+                      <div className="flex justify-center gap-1.5 mt-2">
+                        <div className="w-1 h-2 bg-black" />
+                        <div className="w-1 h-2 bg-black" />
+                      </div>
+                      <div className="w-1 h-1 bg-pink-300 mx-auto mt-1" />
+                    </div>
+                    <div className="w-6 h-3 bg-amber-900 mx-auto -mt-1 border-2 border-black border-t-0"
+                         style={{ clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' }} />
+                  </div>
+                  
+                  <div className="absolute top-16 left-1/2 -translate-x-1/2">
+                    <div className="w-10 h-12 bg-red-700 border-2 border-black relative">
+                      <div className="absolute inset-y-0 left-2 w-0.5 bg-black opacity-30" />
+                      <div className="absolute inset-y-0 left-5 w-0.5 bg-black opacity-30" />
+                      <div className="absolute inset-y-0 right-2 w-0.5 bg-black opacity-30" />
+                      <div className="absolute inset-x-0 top-3 h-0.5 bg-black opacity-30" />
+                      <div className="absolute inset-x-0 top-6 h-0.5 bg-black opacity-30" />
+                      <div className="absolute inset-x-0 top-9 h-0.5 bg-black opacity-30" />
+                    </div>
+                    
+                    <div className="absolute -left-2.5 top-1 w-3 h-8 bg-red-700 border-2 border-black" />
+                    <div className="absolute -right-2.5 top-1 w-3 h-8 bg-red-700 border-2 border-black" />
+                    
+                    <div className="absolute -left-2.5 top-8 w-3 h-2 bg-pink-200 border-2 border-black" />
+                    <div className="absolute -right-2.5 top-8 w-3 h-2 bg-pink-200 border-2 border-black" />
+                  </div>
+                  
+                  <div className="absolute top-28 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="w-4 h-14 bg-blue-900 border-2 border-black" />
+                    <div className="w-4 h-14 bg-blue-900 border-2 border-black" />
+                  </div>
+                  
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="w-5 h-3 bg-amber-900 border-2 border-black rounded-sm" />
+                    <div className="w-5 h-3 bg-amber-900 border-2 border-black rounded-sm" />
+                  </div>
+                  
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-2 bg-black opacity-20 rounded-full blur-sm" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop view - Original record store layout */}
+        <div className="hidden lg:block relative mx-auto" style={{ maxWidth: '1200px', height: '500px' }}>
           
           <div className="absolute inset-x-0 top-0 bottom-0" 
                style={{ 
@@ -976,10 +1120,10 @@ const VinylVault = () => {
 
           {/* Mascot Speech Bubble */}
           {mascotComment && (
-            <div className="absolute bottom-48 left-1/2 z-50 animate-in fade-in duration-200"
-                 style={{ marginLeft: '-100px', width: '300px' }}
+            <div className="fixed inset-x-4 top-20 lg:absolute lg:bottom-48 lg:left-1/2 z-50 animate-in fade-in duration-200"
+                 style={{ maxWidth: '90vw', margin: '0 auto' }}
                  onClick={() => setMascotComment(null)}>
-              <div className="relative bg-white border-4 border-black rounded-lg p-4 shadow-2xl">
+              <div className="relative bg-white border-4 border-black rounded-lg p-4 shadow-2xl lg:w-[300px]">
                 <button 
                   onClick={() => setMascotComment(null)}
                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-black hover:bg-red-600 font-bold text-sm">
@@ -988,9 +1132,9 @@ const VinylVault = () => {
                 <p className="text-sm font-mono text-black leading-relaxed">
                   {mascotComment}
                 </p>
-                {/* Speech bubble pointer */}
-                <div className="absolute -bottom-3 left-12 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-white" />
-                <div className="absolute -bottom-4 left-11.5 w-0 h-0 border-l-9 border-l-transparent border-r-9 border-r-transparent border-t-9 border-t-black" />
+                {/* Speech bubble pointer - hidden on mobile, shown on desktop */}
+                <div className="hidden lg:block absolute -bottom-3 left-12 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-white" />
+                <div className="hidden lg:block absolute -bottom-4 left-11.5 w-0 h-0 border-l-9 border-l-transparent border-r-9 border-r-transparent border-t-9 border-t-black" />
               </div>
             </div>
           )}
@@ -1447,31 +1591,31 @@ const VinylVault = () => {
                backgroundColor: '#a0b050'
              }} />
         
-        <div className="relative z-10 max-w-6xl mx-auto p-8">
-          <div className="flex justify-between items-center mb-8">
+        <div className="relative z-10 max-w-6xl mx-auto p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
             <button onClick={() => setCurrentView('home')}
-                    className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg">
-              ← BACK TO STORE
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg text-sm sm:text-base">
+              ← BACK
             </button>
-            <h1 className="text-4xl font-bold text-yellow-400 font-mono border-8 border-black bg-gray-900 px-6 py-3 rounded shadow-lg" 
+            <h1 className="text-2xl sm:text-4xl font-bold text-yellow-400 font-mono border-4 sm:border-8 border-black bg-gray-900 px-4 sm:px-6 py-2 sm:py-3 rounded shadow-lg" 
                 style={{ textShadow: '2px 2px 0px #000' }}>
-              SEARCH COLLECTION
+              SEARCH
             </h1>
-            <div className="w-48"></div>
+            <div className="hidden sm:block w-48"></div>
           </div>
 
           <div className="mb-8">
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search by artist, album, genre, or year..."
+                placeholder="Artist, album, genre, year..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-4 text-lg bg-gray-900 text-yellow-400 border-4 border-black rounded-lg font-mono focus:outline-none focus:border-yellow-400"
+                className="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg bg-gray-900 text-yellow-400 border-4 border-black rounded-lg font-mono focus:outline-none focus:border-yellow-400"
               />
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-400" size={24} />
             </div>
-            <div className="mt-4 flex items-center gap-4">
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="text-yellow-400 font-mono text-sm bg-gray-900 border-4 border-black rounded px-4 py-2 inline-block">
                 Found {filteredAlbums.length} albums
               </div>
