@@ -1335,6 +1335,7 @@ const VinylVault = () => {
                 </div>
                 <div className="text-xs text-yellow-400 font-mono font-bold">SCROLL</div>
               </div>
+            </div>
           )}
         </div>
 
