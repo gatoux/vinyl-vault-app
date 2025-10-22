@@ -384,7 +384,7 @@ const VinylVault = () => {
     { label: 'B', color: '#6bcf7f', tier: 'B' },
     { label: 'C', color: '#4ecdc4', tier: 'C' },
     { label: 'D', color: '#95a3a6', tier: 'D' },
-    { label: 'TBD', color: '#888888', tier: 'TBD' }
+    { label: 'TBD', color: '#6b7280', tier: 'TBD' }
   ];
 
   const decadeBins = [
@@ -571,17 +571,18 @@ const VinylVault = () => {
   );
 
   const WelcomeDialog = () => (
-    <div className="fixed inset-0 z-50 flex items-end justify-start p-8 pointer-events-none">
-      <div className="relative bg-white border-8 border-black rounded-lg shadow-2xl max-w-md pointer-events-auto"
-           style={{ marginLeft: '180px', marginBottom: '200px' }}>
-        <div className="p-6 font-mono text-base leading-relaxed">
-          Welcome to The Stacks Vinyl! Click on any of the bins to browse, or click on the computer to explore the entire collection. Happy browsing!
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-8 pointer-events-none">
+      <div className="relative bg-white border-8 border-black rounded-lg shadow-2xl max-w-md pointer-events-auto">
+        <div className="p-8 font-mono text-base leading-relaxed text-center">
+          Welcome to Gatoux's Vinyl Vault! Click on any of the bins to browse, or click on the computer to explore the entire collection. Happy browsing!
         </div>
-        <button 
-          className="absolute bottom-3 right-4 animate-bounce text-black text-xl"
-          onClick={() => setShowWelcome(false)}>
-          ▼
-        </button>
+        <div className="flex justify-center pb-6">
+          <button 
+            className="animate-pulse text-black text-4xl hover:scale-110 transition-transform"
+            onClick={() => setShowWelcome(false)}>
+            💿
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -750,20 +751,34 @@ const VinylVault = () => {
               BY TIER
             </div>
             <div className="flex gap-3 justify-center">
-              {tierBins.map(bin => (
+              {tierBins.filter(bin => bin.tier !== 'TBD').map(bin => (
                 <RecordBin 
                   key={bin.tier}
                   albums={getBinAlbums('tier', bin.tier)} 
                   color={bin.color} 
                   label={bin.label}
                   onClick={() => {
-                    setSelectedBin({ type: 'tier', value: bin.tier, label: bin.label === 'TBD' ? 'TBD Albums' : bin.label + ' Tier', color: bin.color });
+                    setSelectedBin({ type: 'tier', value: bin.tier, label: bin.label + ' Tier', color: bin.color });
                     setCurrentView('bin');
                     setCurrentIndex(0);
                   }}
                 />
               ))}
             </div>
+          </div>
+
+          {/* TBD Bin - positioned to the left of search computer */}
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-30" style={{ marginLeft: '-200px' }}>
+            <RecordBin 
+              albums={getBinAlbums('tier', 'TBD')} 
+              color="#6b7280"
+              label="TBD"
+              onClick={() => {
+                setSelectedBin({ type: 'tier', value: 'TBD', label: 'TBD Albums', color: '#6b7280' });
+                setCurrentView('bin');
+                setCurrentIndex(0);
+              }}
+            />
           </div>
 
           <div className="absolute left-6 top-2 z-10 space-y-2.5">
@@ -971,9 +986,41 @@ const VinylVault = () => {
             </div>
           )}
 
+          {(binViewMode === 'collection' || binViewMode === 'list') && binAlbums.length > 0 && (
+            <div className="mb-6 flex gap-4 items-center">
+              <div className="flex gap-2 items-center">
+                <label className="text-yellow-400 font-mono text-sm">Genre:</label>
+                <select 
+                  value={filterGenre} 
+                  onChange={(e) => setFilterGenre(e.target.value)}
+                  className="px-3 py-2 bg-gray-900 text-yellow-400 border-4 border-black rounded font-mono text-sm">
+                  <option value="all">All Genres</option>
+                  {[...new Set(binAlbums.map(a => a.Genre).filter(Boolean))].sort().map(genre => (
+                    <option key={genre} value={genre}>{genre}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-2 items-center">
+                <label className="text-yellow-400 font-mono text-sm">Tier:</label>
+                <select 
+                  value={filterTier} 
+                  onChange={(e) => setFilterTier(e.target.value)}
+                  className="px-3 py-2 bg-gray-900 text-yellow-400 border-4 border-black rounded font-mono text-sm">
+                  <option value="all">All Tiers</option>
+                  {tierBins.map(tier => (
+                    <option key={tier.tier} value={tier.tier}>{tier.tier}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="text-yellow-400 font-mono text-sm bg-gray-900 border-4 border-black rounded px-4 py-2">
+                Showing {filteredAndSortedAlbums.length} of {binAlbums.length}
+              </div>
+            </div>
+          )}
+
           {binViewMode === 'collection' && binAlbums.length > 0 && (
             <div className="grid grid-cols-6 gap-4">
-              {binAlbums.map((album, i) => {
+              {filteredAndSortedAlbums.map((album, i) => {
                 const albumImage = getAlbumImage(album);
                 return (
                   <div key={i} onClick={() => setSelectedAlbum(album)}
