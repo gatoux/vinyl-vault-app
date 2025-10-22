@@ -6,7 +6,7 @@ const VinylVault = () => {
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState('home');
   const [selectedBin, setSelectedBin] = useState(null);
-  const [binViewMode, setBinViewMode] = useState(typeof window !== 'undefined' && window.innerWidth < 1024 ? 'list' : 'bin');
+  const [binViewMode, setBinViewMode] = useState('bin');
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -791,7 +791,10 @@ const VinylVault = () => {
         <div className="block lg:hidden px-4 pb-20">
           <div className="max-w-md mx-auto space-y-4">
             <button 
-              onClick={() => setCurrentView('search')}
+              onClick={() => {
+                setCurrentView('search');
+                setBinViewMode('list');
+              }}
               className="w-full bg-green-900 border-4 border-green-950 rounded-lg p-4 font-mono text-green-400 text-lg hover:bg-green-800">
               🔍 SEARCH COLLECTION
             </button>
@@ -1041,7 +1044,10 @@ const VinylVault = () => {
           </div>
 
           <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-30 cursor-pointer hover:scale-105 transition-transform"
-               onClick={() => setCurrentView('search')}>
+               onClick={() => {
+                 setCurrentView('search');
+                 if (window.innerWidth < 1024) setBinViewMode('list');
+               }}>
             <div className="bg-gray-700 border-6 border-gray-900 rounded-lg p-3 shadow-2xl"
                  style={{ width: '180px', boxShadow: '6px 6px 0px rgba(0,0,0,0.5)' }}>
               <div className="bg-green-900 border-3 border-green-950 p-2 mb-2 font-mono text-green-400 text-center text-xs leading-relaxed">
@@ -1210,7 +1216,7 @@ const VinylVault = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 sm:px-8 pb-4">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-8 pb-4">
 
           {binAlbums.length === 0 && (
             <div className="text-center py-20 font-mono text-xl text-yellow-400 bg-gray-900 border-8 border-black rounded p-8">
@@ -1219,7 +1225,7 @@ const VinylVault = () => {
           )}
 
           {(binViewMode === 'collection' || binViewMode === 'list') && binAlbums.length > 0 && (
-            <div className="mb-6 flex gap-4 items-center">
+            <div className="hidden lg:flex mb-6 gap-4 items-center">
               <div className="flex gap-2 items-center">
                 <label className="text-yellow-400 font-mono text-sm">Genre:</label>
                 <select 
@@ -1323,11 +1329,11 @@ const VinylVault = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-900 rounded-lg overflow-x-auto border-4 border-black shadow-lg">
-                <table className="w-full min-w-full">
+              <div className="bg-gray-900 rounded-lg overflow-hidden border-4 border-black shadow-lg">
+                <table className="w-full table-fixed">
                   <thead className="bg-gray-800">
                     <tr className="font-mono text-xs sm:text-sm text-yellow-400">
-                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700"
+                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700 w-[20%] sm:w-auto"
                           onClick={() => {
                             if (sortColumn === 'Artist') {
                               setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1338,7 +1344,7 @@ const VinylVault = () => {
                           }}>
                         Artist {sortColumn === 'Artist' && (sortDirection === 'asc' ? '▲' : '▼')}
                       </th>
-                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700"
+                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700 w-[25%] sm:w-auto"
                           onClick={() => {
                             if (sortColumn === 'Album') {
                               setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1349,7 +1355,7 @@ const VinylVault = () => {
                           }}>
                         Album {sortColumn === 'Album' && (sortDirection === 'asc' ? '▲' : '▼')}
                       </th>
-                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700"
+                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700 w-[15%] sm:w-auto"
                           onClick={() => {
                             if (sortColumn === 'Year') {
                               setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1360,7 +1366,7 @@ const VinylVault = () => {
                           }}>
                         Year {sortColumn === 'Year' && (sortDirection === 'asc' ? '▲' : '▼')}
                       </th>
-                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700"
+                      <th className="p-2 sm:p-3 text-left border-b-4 border-black cursor-pointer hover:bg-gray-700 w-[25%] sm:w-auto"
                           onClick={() => {
                             if (sortColumn === 'Genre') {
                               setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1371,7 +1377,7 @@ const VinylVault = () => {
                           }}>
                         Genre {sortColumn === 'Genre' && (sortDirection === 'asc' ? '▲' : '▼')}
                       </th>
-                      <th className="p-2 sm:p-3 text-center border-b-4 border-black cursor-pointer hover:bg-gray-700"
+                      <th className="p-2 sm:p-3 text-center border-b-4 border-black cursor-pointer hover:bg-gray-700 w-[15%] sm:w-auto"
                           onClick={() => {
                             if (sortColumn === 'Tier') {
                               setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -1388,10 +1394,10 @@ const VinylVault = () => {
                     {filteredAndSortedAlbums.map((album, i) => (
                       <tr key={i} onClick={() => setSelectedAlbum(album)}
                           className="border-t border-gray-800 hover:bg-gray-800 cursor-pointer">
-                        <td className="p-2 sm:p-3">{album.Artist}</td>
-                        <td className="p-2 sm:p-3">{album.Album}</td>
+                        <td className="p-2 sm:p-3 truncate">{album.Artist}</td>
+                        <td className="p-2 sm:p-3 truncate">{album.Album}</td>
                         <td className="p-2 sm:p-3">{album.Year}</td>
-                        <td className="p-2 sm:p-3">{album.Genre}</td>
+                        <td className="p-2 sm:p-3 truncate">{album.Genre}</td>
                         <td className="p-2 sm:p-3 text-center">
                           <span className="px-2 py-1 rounded font-bold text-black text-xs border-2 border-black inline-block"
                                 style={{ backgroundColor: selectedBin.color }}>
