@@ -657,34 +657,40 @@ const VinylVault = () => {
     const albumImage = getAlbumImage(album);
     
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
-        <div className="bg-gradient-to-br from-purple-900 to-purple-700 rounded-lg p-4 sm:p-8 max-w-3xl w-full border-4 border-purple-400 max-h-screen overflow-y-auto">
-          <button onClick={onClose} className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white hover:text-gray-300 z-10">
-            <X size={32} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black bg-opacity-75 overflow-y-auto">
+        <div className="bg-gradient-to-br from-purple-900 to-purple-700 rounded-lg p-4 sm:p-8 max-w-3xl w-full border-4 border-purple-400 my-4 relative">
+          <button onClick={onClose} className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full p-1">
+            <X size={28} />
           </button>
           
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
-            <div className="w-full sm:w-64 h-64 bg-gray-600 flex items-center justify-center text-gray-400 text-sm rounded flex-shrink-0 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-4 sm:mb-6">
+            <div className="w-full sm:w-64 h-64 sm:h-64 bg-gray-600 flex items-center justify-center text-gray-400 text-sm rounded flex-shrink-0 relative overflow-hidden mx-auto">
               {albumImage ? (
                 <img src={albumImage} alt={album.Album} className="w-full h-full object-cover" />
               ) : (
                 <div className="text-center p-4">{album.Artist}</div>
               )}
+              {/* Tier badge on image for mobile */}
+              <div className="sm:hidden absolute top-2 right-2 w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold border-4 border-black"
+                   style={{ backgroundColor: tierBins.find(t => t.tier === album.Tier)?.color || '#999' }}>
+                {album.Tier}
+              </div>
             </div>
             
             <div className="flex-1 text-white">
-              <div className="flex justify-between items-start mb-4 sm:block">
-                <div>
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1 pr-2">
                   <h2 className="text-2xl sm:text-3xl font-bold mb-2">{album.Artist}</h2>
-                  <p className="text-lg sm:text-xl mb-4 sm:mb-6">{album.Album}</p>
+                  <p className="text-lg sm:text-xl mb-4">{album.Album}</p>
                 </div>
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0"
+                {/* Tier badge for desktop */}
+                <div className="hidden sm:flex w-12 h-12 rounded-full items-center justify-center text-xl font-bold flex-shrink-0"
                      style={{ backgroundColor: tierBins.find(t => t.tier === album.Tier)?.color || '#999' }}>
                   {album.Tier}
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 text-sm mb-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm mb-4 sm:mb-6">
                 <div>
                   <div className="text-purple-300">Year</div>
                   <div className="font-bold">{album.Year || 'N/A'}</div>
@@ -704,9 +710,9 @@ const VinylVault = () => {
               </div>
 
               {(album['Date Bought'] || album['Place Bought'] || album['City Bought'] || album.Cost || album['New/Used']) && (
-                <div className="border-t-2 border-purple-500 pt-4 mb-6">
-                  <h3 className="text-lg font-bold mb-3 text-purple-200">Purchase Info</h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="border-t-2 border-purple-500 pt-3 sm:pt-4 mb-4 sm:mb-6">
+                  <h3 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-purple-200">Purchase Info</h3>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                     {album['Date Bought'] && (
                       <div>
                         <div className="text-purple-300">Date Bought</div>
@@ -716,7 +722,7 @@ const VinylVault = () => {
                     {album['Place Bought'] && (
                       <div>
                         <div className="text-purple-300">Place Bought</div>
-                        <div className="font-bold">{album['Place Bought']}</div>
+                        <div className="font-bold truncate">{album['Place Bought']}</div>
                       </div>
                     )}
                     {album['City Bought'] && (
@@ -741,13 +747,13 @@ const VinylVault = () => {
                 </div>
               )}
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-3 sm:gap-4">
                 <a href={spotifySearchUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
+                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 sm:px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
                   🎵 Find on Spotify
                 </a>
                 <a href={appleMusicSearchUrl} target="_blank" rel="noopener noreferrer"
-                   className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
+                   className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 sm:px-6 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
                   🎵 Find on Apple Music
                 </a>
               </div>
