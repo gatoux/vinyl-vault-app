@@ -16,7 +16,6 @@ const VinylVault = () => {
   const [filterGenre, setFilterGenre] = useState('all');
   const [filterTier, setFilterTier] = useState('all');
   const [albumImages, setAlbumImages] = useState({});
-  const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null);
   const [scrollTimeout, setScrollTimeout] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
@@ -374,6 +373,12 @@ const VinylVault = () => {
   };
 
   const getAlbumImage = (album) => {
+    // First, check if the album has an Image URL from Airtable
+    if (album['Image URL']) {
+      return album['Image URL'];
+    }
+    
+    // Fallback to the old hardcoded images (if they exist)
     const imageKey = album.Artist + '-' + album.Album;
     return albumImages[imageKey];
   };
@@ -717,7 +722,6 @@ const VinylVault = () => {
     return (
       <div className="min-h-screen bg-black relative overflow-hidden">
         {showWelcome && <WelcomeDialog />}
-        {showUploadModal && <BulkUploadModal />}
         {showPlaylist && <PlaylistModal />}
         
         <div className="text-center py-4 relative z-10">
@@ -728,11 +732,6 @@ const VinylVault = () => {
           <p className="text-yellow-300 font-mono text-xs">
             {albums.length} ALBUMS IN COLLECTION | {albums.filter(a => a.Tier && a.Tier !== 'TBD').length} LISTENED TO THIS YEAR
           </p>
-          <button 
-            onClick={() => setShowUploadModal(true)}
-            className="mt-2 px-4 py-2 rounded font-mono text-xs border-2 bg-yellow-400 text-black border-yellow-600 hover:bg-yellow-500">
-            📁 BULK UPLOAD IMAGES
-          </button>
         </div>
 
         <div className="relative mx-auto" style={{ maxWidth: '1200px', height: '500px' }}>
