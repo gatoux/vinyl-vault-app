@@ -250,29 +250,6 @@ const VinylVault = () => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [currentView, binViewMode, selectedBin, currentIndex, albums]);
 
-  const normalizeGenre = (genre) => {
-    if (!genre) return null;
-    const g = genre.toLowerCase().trim();
-    
-    if (g.includes('60') || g === '1960s') return '1960s';
-    if (g.includes('70') || g === '1970s') return '1970s';
-    if (g.includes('80') || g === '1980s') return '1980s';
-    if (g.includes('90') || g === '1990s') return '1990s';
-    if (g.includes('2000') || g === '00s') return '2000s';
-    if (g.includes('2010') || g === '10s') return '2010s';
-    if (g.includes('2020') || g === '20s') return '2020s';
-    
-    if (g.includes('lounge')) return 'Lounge';
-    if (g.includes('hip') || g.includes('r&b')) return 'Hip-Hop / R&B';
-    if (g.includes('electronic') || g.includes('alt')) return 'Electronic';
-    if (g.includes('comedy') || g.includes('soundtrack')) {
-      if (g.includes('comedy')) return 'Comedy';
-      if (g.includes('soundtrack')) return 'Soundtrack';
-    }
-    
-    return genre;
-  };
-
   const getBinAlbums = (binType, binValue) => {
     return albums.filter(album => {
       if (binType === 'tier') {
