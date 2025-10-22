@@ -1173,7 +1173,7 @@ const VinylVault = () => {
       });
     
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
+      <div className="min-h-screen max-h-screen overflow-hidden bg-black relative">
         <div className="absolute inset-0" 
              style={{ 
                background: 'linear-gradient(45deg, #b8c657 25%, transparent 25%), linear-gradient(-45deg, #b8c657 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #b8c657 75%), linear-gradient(-45deg, transparent 75%, #b8c657 75%)',
@@ -1182,31 +1182,35 @@ const VinylVault = () => {
                backgroundColor: '#a0b050'
              }} />
         
-        <div className="relative z-10 max-w-6xl mx-auto p-4 sm:p-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-            <button onClick={() => setCurrentView('home')}
-                    className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg text-sm sm:text-base">
-              ← BACK
-            </button>
-            <h1 className="text-2xl sm:text-4xl font-bold text-yellow-400 font-mono border-4 sm:border-8 border-black bg-gray-900 px-4 sm:px-6 py-2 sm:py-3 rounded shadow-lg" 
-                style={{ textShadow: '2px 2px 0px #000' }}>
-              {selectedBin.label}
-            </h1>
-            <div className="flex gap-2">
-              <button onClick={() => setBinViewMode('bin')}
-                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'bin' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
-                BIN
+        <div className="relative z-10 h-screen flex flex-col">
+          <div className="flex-shrink-0 p-4 sm:p-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <button onClick={() => setCurrentView('home')}
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg text-sm sm:text-base">
+                ← BACK
               </button>
-              <button onClick={() => setBinViewMode('collection')}
-                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'collection' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
-                GRID
-              </button>
-              <button onClick={() => setBinViewMode('list')}
-                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
-                LIST
-              </button>
+              <h1 className="text-2xl sm:text-4xl font-bold text-yellow-400 font-mono border-4 sm:border-8 border-black bg-gray-900 px-4 sm:px-6 py-2 sm:py-3 rounded shadow-lg text-center" 
+                  style={{ textShadow: '2px 2px 0px #000' }}>
+                {selectedBin.label}
+              </h1>
+              <div className="flex gap-2 z-50 relative">
+                <button onClick={() => setBinViewMode('bin')}
+                        className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'bin' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                  BIN
+                </button>
+                <button onClick={() => setBinViewMode('collection')}
+                        className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'collection' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                  GRID
+                </button>
+                <button onClick={() => setBinViewMode('list')}
+                        className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                  LIST
+                </button>
+              </div>
             </div>
           </div>
+
+          <div className="flex-1 overflow-y-auto px-4 sm:px-8 pb-4">
 
           {binAlbums.length === 0 && (
             <div className="text-center py-20 font-mono text-xl text-yellow-400 bg-gray-900 border-8 border-black rounded p-8">
@@ -1403,8 +1407,8 @@ const VinylVault = () => {
           )}
 
           {binViewMode === 'bin' && binAlbums.length > 0 && (
-            <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mx-auto px-4 lg:px-0" 
-                 style={{ maxWidth: '1200px' }}
+            <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mx-auto px-4 lg:px-0 touch-none" 
+                 style={{ maxWidth: '1200px', touchAction: 'none' }}
                  onWheel={(e) => {
                    e.preventDefault();
                    
@@ -1586,6 +1590,7 @@ const VinylVault = () => {
             </div>
             </div>
           )}
+          </div>
         </div>
 
         {selectedAlbum && (
