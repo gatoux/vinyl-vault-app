@@ -20,6 +20,7 @@ const VinylVault = () => {
   const [scrollTimeout, setScrollTimeout] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [excludeTBD, setExcludeTBD] = useState(false);
+  const [mascotComment, setMascotComment] = useState(null);
 
   const EMBEDDED_DATA = [
     {"Artist":"Diana Ross","Album":"Ross","Year":"1978","Genre":"Soul","Tier":"B","Length":"39m","DateListened":"1/12","DateBought":"12/20/2024","PlaceBought":"Record Parlour","CityBought":"LA","Cost":"$7.98","NewUsed":"Used"},
@@ -425,6 +426,33 @@ const VinylVault = () => {
     { label: 'Comedy', color: '#ff9d5c' },
     { label: 'Holiday', color: '#6bcf7f' }
   ];
+
+  const snarkyComments = [
+    "Ray Charles doing country? $12.99 at Antone's. Some of us know how to shop.",
+    "Florence + The Machine's Ceremonials? S tier. Always. Reminds me of a specific moment in my life that you wouldn't understand.",
+    "Masaki Ueda's After Midnight. Picked this up in Tokyo 100% because of the super chill cover. That's how you build a collection.",
+    "John Prine's first album? Definition of S tier. From top to bottom, no skips. But you probably haven't heard of him.",
+    "Wham!'s Make It Big is filled with bangers. Hate all you want, this is objectively a good record.",
+    "Taj Mahal's Recycling The Blues got my first C rating. Sweet Home Chicago bumped it to a B, then I reflected and... first C.",
+    "Jack Johnson's On and On has too many S tier songs to be anything less than an A. Do the math.",
+    "Eminem's Marshall Mathers LP? C tier. I know Moop's gonna read this and be furious. Worth it.",
+    "Taylor Swift's reputation? Still not great. It's catchy because it's part of popular culture now and T Swift is T Swift. But still.",
+    "Vince Guaraldi's tone just reminds you of Charlie Brown now, doesn't it? Unfortunate for an otherwise brilliant jazz pianist.",
+    "Maureen Tomson's The Thrill is Gone is a gem. She doesn't even have a Wikipedia page. That's how you find real music.",
+    "Steve Martin's Let's Get Small - the precision to the absurdity is brilliant. Comedy albums count as vinyl, fight me.",
+    "Miley Cyrus made a fun pop record. First 3 tracks are phenomenal. Yes, I said Miley Cyrus. I contain multitudes.",
+    "Belaire Voices with Strings Unlimited - kinda cheesy but nice. Will I sprint to throw this on again? No. Will I be pleasantly surprised in a few years? Yes.",
+    "Gontiti's Sunday Market: A level talent, C level pure enjoyment for me. Genreless Japanese guitar wizardry. It's... complicated.",
+    "The Square's R.E.S.O.R.T. - how do you categorize this? 80s? Jazz? Funk? Japanese Yacht Rock Fusion? Really good sitcom theme music?",
+    "Widespread Panic's Space Wrangler came out in the 80s. Can you believe that? I've been listening to this song for decades and just learned that.",
+    "Hino=Kikuchi Quintet could be up there with the greats of the 60s. Incredible trumpet and piano. But you've probably never heard of them.",
+    "Got my record cleaner and brought Lurlean Hunter's Night Life back to life. $15.98. Some of us invest in our collection properly.",
+    "Marian McPartland. I'd never heard of her before. Now I put her up there with Bill Evans. That's called growth."
+  ];
+
+  const getRandomComment = () => {
+    return snarkyComments[Math.floor(Math.random() * snarkyComments.length)];
+  };
 
   const RecordBin = ({ albums, color, label, onClick }) => {
     const count = albums.length;
@@ -881,8 +909,15 @@ const VinylVault = () => {
             </div>
           </div>
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40"
-               style={{ marginLeft: '-100px', transform: 'scale(0.8)' }}>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 cursor-pointer hover:scale-110 transition-transform"
+               style={{ marginLeft: '-100px', transform: 'scale(0.8)' }}
+               onClick={() => setMascotComment(getRandomComment())}>
+            {/* Clickable hint */}
+            {!mascotComment && (
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white border-2 border-black rounded-full px-2 py-1 text-xs animate-bounce">
+                ...
+              </div>
+            )}
             <div className="relative" style={{ width: '48px', height: '70px' }}>
               <div className="absolute top-0 left-1/2 -translate-x-1/2">
                 <div className="w-8 h-5 bg-gray-800 rounded-t-full border-2 border-black" 
@@ -928,6 +963,27 @@ const VinylVault = () => {
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-2 bg-black opacity-20 rounded-full blur-sm" />
             </div>
           </div>
+
+          {/* Mascot Speech Bubble */}
+          {mascotComment && (
+            <div className="absolute bottom-48 left-1/2 z-50 animate-in fade-in duration-200"
+                 style={{ marginLeft: '-100px', width: '300px' }}
+                 onClick={() => setMascotComment(null)}>
+              <div className="relative bg-white border-4 border-black rounded-lg p-4 shadow-2xl">
+                <button 
+                  onClick={() => setMascotComment(null)}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center border-2 border-black hover:bg-red-600 font-bold text-sm">
+                  ×
+                </button>
+                <p className="text-sm font-mono text-black leading-relaxed">
+                  {mascotComment}
+                </p>
+                {/* Speech bubble pointer */}
+                <div className="absolute -bottom-3 left-12 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-white" />
+                <div className="absolute -bottom-4 left-11.5 w-0 h-0 border-l-9 border-l-transparent border-r-9 border-r-transparent border-t-9 border-t-black" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
