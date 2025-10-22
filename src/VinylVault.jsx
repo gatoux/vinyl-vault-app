@@ -185,7 +185,8 @@ const VinylVault = () => {
             'Place Bought': album['Place Bought'],
             'City Bought': album['City Bought'],
             Cost: album.Cost,
-            'New/Used': album['New/Used']
+            'New/Used': album['New/Used'],
+            'Image URL': album['Image URL']
           };
         });
         
