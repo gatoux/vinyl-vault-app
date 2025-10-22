@@ -1198,7 +1198,8 @@ const VinylVault = () => {
                    setScrollTimeout(timeout);
                  }}>
               
-              <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-center" style={{ marginTop: '0' }}>
+              <div className="w-56 flex justify-center">
+                <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-center" style={{ marginTop: '0' }}>
                 <div className="text-center mb-3">
                   <p className="text-yellow-400 font-mono font-bold text-base mb-2">HOW TO NAVIGATE</p>
                 </div>
@@ -1220,6 +1221,7 @@ const VinylVault = () => {
                   <p className="text-gray-400 font-mono text-xs">Click the front record to view full details</p>
                 </div>
               </div>
+            </div>
 
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="relative max-w-2xl mx-auto" style={{ height: '450px', width: '420px' }}>
@@ -1279,7 +1281,8 @@ const VinylVault = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-2 self-center" style={{ marginTop: '0' }}>
+              <div className="w-56 flex justify-center">
+                <div className="flex flex-col items-center gap-2 self-center" style={{ marginTop: '0' }}>
                 <div 
                   className="w-12 bg-gray-900 border-4 border-black rounded-lg overflow-hidden cursor-pointer hover:border-yellow-600 transition-colors" 
                   style={{ height: '450px' }}
