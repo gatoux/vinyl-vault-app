@@ -20,6 +20,7 @@ const VinylVault = () => {
   const [uploadProgress, setUploadProgress] = useState(null);
   const [scrollTimeout, setScrollTimeout] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
+  const [excludeTBD, setExcludeTBD] = useState(false);
 
   const EMBEDDED_DATA = [
     {"Artist":"Diana Ross","Album":"Ross","Year":"1978","Genre":"Soul","Tier":"B","Length":"39m","DateListened":"1/12","DateBought":"12/20/2024","PlaceBought":"Record Parlour","CityBought":"LA","Cost":"$7.98","NewUsed":"Used"},
@@ -630,7 +631,7 @@ const VinylVault = () => {
                 </div>
                 <div>
                   <div className="text-purple-300">Length</div>
-                  <div className="font-bold">{album['Album Length'] || 'N/A'}</div>
+                  <div className="font-bold">{album['Length'] || album['Album Length'] || 'N/A'}</div>
                 </div>
                 <div>
                   <div className="text-purple-300">Listened</div>
@@ -719,7 +720,7 @@ const VinylVault = () => {
             VINYL VAULT
           </h1>
           <p className="text-yellow-300 font-mono text-xs">
-            {albums.length} ALBUMS IN COLLECTION | {Object.keys(albumImages).length} WITH COVERS
+            {albums.length} ALBUMS IN COLLECTION | {albums.filter(a => a.Tier && a.Tier !== 'TBD').length} LISTENED TO THIS YEAR
           </p>
           <button 
             onClick={() => setShowUploadModal(true)}
@@ -756,7 +757,7 @@ const VinylVault = () => {
                   color={bin.color} 
                   label={bin.label}
                   onClick={() => {
-                    setSelectedBin({ type: 'tier', value: bin.tier, label: bin.label + ' Rated Albums', color: bin.color });
+                    setSelectedBin({ type: 'tier', value: bin.tier, label: bin.label === 'TBD' ? 'TBD Albums' : bin.label + ' Tier', color: bin.color });
                     setCurrentView('bin');
                     setCurrentIndex(0);
                   }}
@@ -789,7 +790,26 @@ const VinylVault = () => {
               GENRES
             </div>
             <div className="space-y-2.5 mb-2.5 flex flex-col items-end">
-              {genreBins.slice(0, 9).map(bin => (
+              {genreBins.slice(0, 7).map(bin => (
+                <RecordBin 
+                  key={bin.label}
+                  albums={getBinAlbums('genre', bin.label)} 
+                  color={bin.color} 
+                  label={bin.label}
+                  onClick={() => {
+                    setSelectedBin({ type: 'genre', value: bin.label, label: bin.label, color: bin.color });
+                    setCurrentView('bin');
+                    setCurrentIndex(0);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom row of genre bins */}
+          <div className="absolute bottom-20 left-6 right-6 z-10 flex justify-between items-end px-24">
+            <div className="flex gap-2">
+              {genreBins.slice(7, 10).map(bin => (
                 <RecordBin 
                   key={bin.label}
                   albums={getBinAlbums('genre', bin.label)} 
@@ -804,8 +824,8 @@ const VinylVault = () => {
               ))}
             </div>
             <div className="flex gap-2">
-              {genreBins.slice(9, 13).map(bin => (
-                <SmallRecordBin 
+              {genreBins.slice(10).map(bin => (
+                <RecordBin 
                   key={bin.label}
                   albums={getBinAlbums('genre', bin.label)} 
                   color={bin.color} 
@@ -1141,31 +1161,31 @@ const VinylVault = () => {
                    setScrollTimeout(timeout);
                  }}>
               
-              <div className="bg-gray-900 border-4 border-black rounded-lg p-6 w-64 self-start" style={{ marginTop: '80px' }}>
-                <div className="text-center mb-4">
-                  <p className="text-yellow-400 font-mono font-bold text-lg mb-2">HOW TO NAVIGATE</p>
+              <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-start" style={{ marginTop: '40px' }}>
+                <div className="text-center mb-3">
+                  <p className="text-yellow-400 font-mono font-bold text-base mb-2">HOW TO NAVIGATE</p>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-4 py-3 font-bold font-mono text-yellow-400 text-2xl w-full">↑ ↓</div>
-                    <span className="text-gray-300 font-mono text-sm">Arrow keys</span>
+                <div className="space-y-3">
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-3 py-2 font-bold font-mono text-yellow-400 text-xl w-full">↑ ↓</div>
+                    <span className="text-gray-300 font-mono text-xs">Arrow keys</span>
                   </div>
-                  <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-4 py-3 font-bold font-mono text-yellow-400 text-2xl w-full">🖱️</div>
-                    <span className="text-gray-300 font-mono text-sm">Mouse wheel</span>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-3 py-2 font-bold font-mono text-yellow-400 text-xl w-full">🖱️</div>
+                    <span className="text-gray-300 font-mono text-xs">Mouse wheel</span>
                   </div>
-                  <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-4 py-3 font-bold font-mono text-yellow-400 text-2xl w-full">📊</div>
-                    <span className="text-gray-300 font-mono text-sm">Click scroll bar</span>
+                  <div className="flex flex-col items-center gap-1 text-center">
+                    <div className="bg-gray-800 border-2 border-yellow-600 rounded px-3 py-2 font-bold font-mono text-yellow-400 text-xl w-full">📊</div>
+                    <span className="text-gray-300 font-mono text-xs">Click scroll bar</span>
                   </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-700 text-center">
+                <div className="mt-3 pt-3 border-t border-gray-700 text-center">
                   <p className="text-gray-400 font-mono text-xs">Click the front record to view full details</p>
                 </div>
               </div>
 
               <div className="flex-1 flex flex-col items-center">
-                <div className="relative w-full max-w-2xl" style={{ height: '600px' }}>
+                <div className="relative w-full max-w-2xl" style={{ height: '450px' }}>
                   {binAlbums.map((album, idx) => {
                     const offset = idx - currentIndex;
                     const isVisible = Math.abs(offset) <= 2;
@@ -1189,8 +1209,8 @@ const VinylVault = () => {
                           width: '500px'
                         }}
                         onClick={() => offset === 0 && setSelectedAlbum(album)}>
-                        <div className="relative bg-gray-800 rounded-lg p-6 border-8 border-black shadow-2xl overflow-hidden"
-                             style={{ height: '500px' }}>
+                        <div className="relative bg-gray-800 rounded-lg p-4 border-8 border-black shadow-2xl overflow-hidden"
+                             style={{ height: '400px' }}>
                           {albumImage && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <img src={albumImage} alt={album.Album} className="w-full h-full object-contain opacity-40" />
@@ -1289,12 +1309,18 @@ const VinylVault = () => {
   if (currentView === 'search') {
     const filteredAlbums = albums.filter(album => {
       const searchLower = searchQuery.toLowerCase();
-      return (
+      const matchesSearch = (
         album.Artist?.toLowerCase().includes(searchLower) ||
         album.Album?.toLowerCase().includes(searchLower) ||
         album.Genre?.toLowerCase().includes(searchLower) ||
         album.Year?.toLowerCase().includes(searchLower)
       );
+      
+      if (excludeTBD && album.Tier === 'TBD') {
+        return false;
+      }
+      
+      return matchesSearch;
     });
 
     return (
@@ -1331,8 +1357,19 @@ const VinylVault = () => {
               />
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-400" size={24} />
             </div>
-            <div className="mt-2 text-yellow-400 font-mono text-sm bg-gray-900 border-4 border-black rounded px-4 py-2 inline-block">
-              Found {filteredAlbums.length} albums
+            <div className="mt-4 flex items-center gap-4">
+              <div className="text-yellow-400 font-mono text-sm bg-gray-900 border-4 border-black rounded px-4 py-2 inline-block">
+                Found {filteredAlbums.length} albums
+              </div>
+              <label className="flex items-center gap-2 text-yellow-400 font-mono text-sm bg-gray-900 border-4 border-black rounded px-4 py-2 cursor-pointer hover:bg-gray-800">
+                <input
+                  type="checkbox"
+                  checked={excludeTBD}
+                  onChange={(e) => setExcludeTBD(e.target.checked)}
+                  className="w-4 h-4 cursor-pointer"
+                />
+                Exclude TBD
+              </label>
             </div>
           </div>
 
