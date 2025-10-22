@@ -419,8 +419,11 @@ const VinylVault = () => {
       <div className="relative cursor-pointer hover:brightness-110 transition-all"
            onClick={onClick}
            style={{ width: '110px' }}>
-        <div className="relative bg-gradient-to-br from-amber-800 to-amber-900 border-3 border-amber-950 rounded p-2"
-             style={{ height: '55px' }}>
+        <div className="relative border-3 border-black rounded p-2"
+             style={{ 
+               height: '55px',
+               background: color || '#92400e'
+             }}>
           <div className="absolute top-1 left-0 right-0 text-center px-1 py-0.5 text-sm font-bold text-white"
                style={{ textShadow: '2px 2px 3px rgba(0,0,0,0.9)' }}>
             {label}
@@ -1175,7 +1178,7 @@ const VinylVault = () => {
           )}
 
           {binViewMode === 'bin' && binAlbums.length > 0 && (
-            <div className="relative flex items-start justify-center gap-8"
+            <div className="relative flex items-center justify-center gap-8"
                  onWheel={(e) => {
                    e.preventDefault();
                    
