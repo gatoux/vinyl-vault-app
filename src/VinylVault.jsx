@@ -21,6 +21,10 @@ const VinylVault = () => {
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [excludeTBD, setExcludeTBD] = useState(false);
   const [mascotComment, setMascotComment] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const EMBEDDED_DATA = [
     {"Artist":"Diana Ross","Album":"Ross","Year":"1978","Genre":"Soul","Tier":"B","Length":"39m","DateListened":"1/12","DateBought":"12/20/2024","PlaceBought":"Record Parlour","CityBought":"LA","Cost":"$7.98","NewUsed":"Used"},
@@ -464,6 +468,33 @@ const VinylVault = () => {
     return snarkyComments[Math.floor(Math.random() * snarkyComments.length)];
   };
 
+  // Swipe handlers for mobile
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  };
+
+  const handleTouchEnd = (maxIndex) => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+    
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        // Swiped up - go to next
+        setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+      } else {
+        // Swiped down - go to previous
+        setCurrentIndex(prev => Math.max(0, prev - 1));
+      }
+    }
+  };
+
   const RecordBin = ({ albums, color, label, onClick }) => {
     const count = albums.length;
     // Use brown gradient for most bins, but allow override (for TBD)
@@ -793,7 +824,7 @@ const VinylVault = () => {
             <button 
               onClick={() => setShowPlaylist(true)}
               className="w-full bg-purple-700 border-4 border-purple-900 rounded-lg p-4 font-mono text-white text-lg hover:bg-purple-600">
-              🎵 PLAYLIST BUILDER
+              🎵 LISTEN HERE
             </button>
 
             <div className="bg-gray-900 rounded-lg p-4 border-4 border-yellow-600">
@@ -826,7 +857,7 @@ const VinylVault = () => {
             </div>
 
             <div className="bg-gray-900 rounded-lg p-4 border-4 border-yellow-600">
-              <h3 className="text-yellow-400 font-mono text-sm mb-3 text-center">DECADES</h3>
+              <h3 className="text-yellow-400 font-mono text-sm mb-3 text-center">POP/ROCK DECADES</h3>
               <div className="grid grid-cols-2 gap-2">
                 {decadeBins.map(bin => (
                   <button
@@ -1176,27 +1207,27 @@ const VinylVault = () => {
                backgroundColor: '#a0b050'
              }} />
         
-        <div className="relative z-10 max-w-6xl mx-auto p-8">
-          <div className="flex justify-between items-center mb-8">
+        <div className="relative z-10 max-w-6xl mx-auto p-4 sm:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
             <button onClick={() => setCurrentView('home')}
-                    className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg">
-              ← BACK TO STORE
+                    className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-900 hover:bg-gray-800 text-yellow-400 rounded font-mono border-4 border-black shadow-lg text-sm sm:text-base">
+              ← BACK
             </button>
-            <h1 className="text-4xl font-bold text-yellow-400 font-mono border-8 border-black bg-gray-900 px-6 py-3 rounded shadow-lg" 
+            <h1 className="text-2xl sm:text-4xl font-bold text-yellow-400 font-mono border-4 sm:border-8 border-black bg-gray-900 px-4 sm:px-6 py-2 sm:py-3 rounded shadow-lg" 
                 style={{ textShadow: '2px 2px 0px #000' }}>
               {selectedBin.label}
             </h1>
             <div className="flex gap-2">
               <button onClick={() => setBinViewMode('bin')}
-                      className={'px-4 py-3 rounded font-mono border-4 border-black shadow-lg ' + (binViewMode === 'bin' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'bin' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
                 BIN
               </button>
               <button onClick={() => setBinViewMode('collection')}
-                      className={'px-4 py-3 rounded font-mono border-4 border-black shadow-lg ' + (binViewMode === 'collection' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'collection' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
                 GRID
               </button>
               <button onClick={() => setBinViewMode('list')}
-                      className={'px-4 py-3 rounded font-mono border-4 border-black shadow-lg ' + (binViewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
+                      className={'px-3 sm:px-4 py-2 sm:py-3 rounded font-mono border-2 sm:border-4 border-black shadow-lg text-xs sm:text-base ' + (binViewMode === 'list' ? 'bg-yellow-400 text-black' : 'bg-gray-900 text-yellow-400')}>
                 LIST
               </button>
             </div>
@@ -1241,7 +1272,7 @@ const VinylVault = () => {
           )}
 
           {binViewMode === 'collection' && binAlbums.length > 0 && (
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
               {filteredAndSortedAlbums.map((album, i) => {
                 const albumImage = getAlbumImage(album);
                 return (
@@ -1397,7 +1428,8 @@ const VinylVault = () => {
           )}
 
           {binViewMode === 'bin' && binAlbums.length > 0 && (
-            <div className="relative flex items-center justify-center gap-8 mx-auto" style={{ maxWidth: '1200px' }}
+            <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mx-auto px-4 lg:px-0" 
+                 style={{ maxWidth: '1200px' }}
                  onWheel={(e) => {
                    e.preventDefault();
                    
@@ -1413,9 +1445,29 @@ const VinylVault = () => {
                    }, 200);
                    
                    setScrollTimeout(timeout);
+                 }}
+                 onTouchStart={(e) => {
+                   setTouchEnd(null);
+                   setTouchStart(e.targetTouches[0].clientY);
+                 }}
+                 onTouchMove={(e) => setTouchEnd(e.targetTouches[0].clientY)}
+                 onTouchEnd={() => {
+                   if (!touchStart || !touchEnd) return;
+                   const distance = touchStart - touchEnd;
+                   const isSwipe = Math.abs(distance) > 50;
+                   if (isSwipe) {
+                     if (distance > 0) {
+                       // Swiped up - go to next
+                       setCurrentIndex(prev => Math.min(binAlbums.length - 1, prev + 1));
+                     } else {
+                       // Swiped down - go to previous
+                       setCurrentIndex(prev => Math.max(0, prev - 1));
+                     }
+                   }
                  }}>
               
-              <div className="w-56 flex justify-center">
+              {/* Navigation instructions - hidden on mobile */}
+              <div className="hidden lg:flex w-56 justify-center">
                 <div className="bg-gray-900 border-4 border-black rounded-lg p-4 w-56 self-center" style={{ marginTop: '0' }}>
                 <div className="text-center mb-3">
                   <p className="text-yellow-400 font-mono font-bold text-base mb-2">HOW TO NAVIGATE</p>
@@ -1440,8 +1492,14 @@ const VinylVault = () => {
               </div>
             </div>
 
-              <div className="flex-1 flex flex-col items-center justify-center">
-                <div className="relative max-w-2xl mx-auto" style={{ height: '450px', width: '420px' }}>
+              {/* Album cards */}
+              <div className="flex-1 flex flex-col items-center justify-center w-full">
+                {/* Mobile swipe hint */}
+                <div className="lg:hidden text-center mb-4 text-yellow-400 font-mono text-xs animate-pulse">
+                  👆 Swipe up/down to browse
+                </div>
+                
+                <div className="relative max-w-2xl mx-auto w-full" style={{ height: '450px', maxWidth: '420px' }}>
                   {binAlbums.map((album, idx) => {
                     const offset = idx - currentIndex;
                     const isVisible = Math.abs(offset) <= 2;
@@ -1457,33 +1515,31 @@ const VinylVault = () => {
                     return (
                       <div
                         key={idx}
-                        className="absolute left-1/2 top-1/2 cursor-pointer transition-all duration-300 ease-out"
+                        className="absolute left-1/2 top-1/2 cursor-pointer transition-all duration-300 ease-out w-full max-w-[90vw] sm:max-w-[420px]"
                         style={{
                           transform: 'translate(-50%, calc(-50% + ' + translateY + 'px)) scale(' + scale + ')',
                           opacity: opacity,
-                          zIndex: zIndex,
-                          width: '420px'
+                          zIndex: zIndex
                         }}
                         onClick={() => offset === 0 && setSelectedAlbum(album)}>
-                        <div className="relative bg-gray-800 rounded-lg p-4 border-8 border-black shadow-2xl overflow-hidden"
-                             style={{ height: '420px' }}>
+                        <div className="relative bg-gray-800 rounded-lg p-3 sm:p-4 border-4 sm:border-8 border-black shadow-2xl overflow-hidden aspect-square">
                           {albumImage && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <img src={albumImage} alt={album.Album} className="w-full h-full object-contain opacity-40" />
                             </div>
                           )}
-                          <div className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold border-4 border-black"
+                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-xl font-bold border-2 sm:border-4 border-black"
                                style={{ backgroundColor: tierBins.find(t => t.tier === album.Tier)?.color || '#999' }}>
                             {album.Tier}
                           </div>
                           
-                          <div className="relative flex flex-col items-center justify-center h-full text-center">
-                            <div className="text-2xl font-bold text-yellow-400 mb-3 drop-shadow-lg">{album.Artist}</div>
-                            <div className="text-lg text-gray-300 mb-3 drop-shadow-lg">{album.Album}</div>
-                            <div className="text-base text-gray-400 drop-shadow-lg">{album.Year}</div>
+                          <div className="relative flex flex-col items-center justify-center h-full text-center px-2">
+                            <div className="text-xl sm:text-2xl font-bold text-yellow-400 mb-2 sm:mb-3 drop-shadow-lg">{album.Artist}</div>
+                            <div className="text-base sm:text-lg text-gray-300 mb-2 sm:mb-3 drop-shadow-lg">{album.Album}</div>
+                            <div className="text-sm sm:text-base text-gray-400 drop-shadow-lg">{album.Year}</div>
                             {offset === 0 && (
-                              <div className="mt-4 text-xs text-cyan-400 font-mono animate-pulse drop-shadow-lg">
-                                ▼ CLICK TO VIEW DETAILS ▼
+                              <div className="mt-3 sm:mt-4 text-xs text-cyan-400 font-mono animate-pulse drop-shadow-lg">
+                                ▼ TAP TO VIEW DETAILS ▼
                               </div>
                             )}
                           </div>
