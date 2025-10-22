@@ -1180,7 +1180,7 @@ const VinylVault = () => {
           )}
 
           {binViewMode === 'bin' && binAlbums.length > 0 && (
-            <div className="relative flex items-center justify-center gap-8"
+            <div className="relative flex items-center justify-center gap-8 mx-auto" style={{ maxWidth: '1200px' }}
                  onWheel={(e) => {
                    e.preventDefault();
                    
@@ -1229,9 +1229,9 @@ const VinylVault = () => {
                     
                     if (!isVisible) return null;
                     
-                    const translateY = offset * 120;
-                    const opacity = 1 - Math.abs(offset) * 0.4;
-                    const scale = 1 - Math.abs(offset) * 0.15;
+                    const translateY = offset * 180; // Increased from 120 to 180 for more spacing
+                    const opacity = 1 - Math.abs(offset) * 0.6; // Increased from 0.4 to 0.6 for more fade
+                    const scale = 1 - Math.abs(offset) * 0.2; // Increased from 0.15 to 0.2 for more shrinking
                     const zIndex = 100 - Math.abs(offset);
                     const albumImage = getAlbumImage(album);
                     
