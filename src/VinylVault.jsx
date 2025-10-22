@@ -126,10 +126,10 @@ const VinylVault = () => {
     const g = genre.toLowerCase().trim();
     
     // Map various genre names to standardized format
-    if (g.includes('60') || g.includes('1960')) return '60s';
-    if (g.includes('70') || g.includes('1970')) return '70s';
-    if (g.includes('80') || g.includes('1980')) return '80s';
-    if (g.includes('90') || g.includes('1990')) return '90s';
+    if (g.includes('60') || g.includes('1960')) return '1960s';
+    if (g.includes('70') || g.includes('1970')) return '1970s';
+    if (g.includes('80') || g.includes('1980')) return '1980s';
+    if (g.includes('90') || g.includes('1990')) return '1990s';
     if (g.includes('00') || g.includes('2000')) return '2000s';
     if (g.includes('10') || g.includes('2010')) return '2010s';
     if (g.includes('20') || g.includes('2020')) return '2020s';
